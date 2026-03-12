@@ -1,1 +1,83 @@
-<p>member-detailed works!</p>
+@if(member() ; as member){
+
+<div class="flex gap-6 max-w-7xl mx-auto">
+
+    <!-- LEFT CARD -->
+    <div class="card bg-base-100 shadow-xl w-1/4">
+
+        <figure class="p-6">
+            <img 
+                [src]="member.imageUrl || '/user.png'" 
+                alt="member image"
+                class="rounded-full w-40 h-40 object-cover border-4 border-primary">
+        </figure>
+
+        <div class="card-body items-center text-center pt-0">
+
+            <h2 class="text-2xl font-bold text-primary">
+                {{member.displayName}}, {{member.dateOfBirth | age}}
+            </h2>
+
+            <p class="text-sm text-gray-500">
+                {{member.city}}, {{member.counrty}}
+            </p>
+
+            <div class="divider"></div>
+
+            <ul class="menu bg-base-200 rounded-box w-full">
+                <li>
+                    <a routerLink="profile" routerLinkActive="text-primary font-semibold">
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="photos" routerLinkActive="text-primary font-semibold">
+                        Photos
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="messages" routerLinkActive="text-primary font-semibold">
+                        Messages
+                    </a>
+                </li>
+            </ul>
+
+            <div class="divider"></div>
+
+            <div class="flex gap-2 w-full">
+                <button class="btn btn-outline btn-info flex-1">
+                    Go Back
+                </button>
+
+                <button class="btn btn-primary flex-1">
+                    ❤️ Like
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- RIGHT CONTENT -->
+    <div class="card bg-base-100 shadow-xl w-3/4 p-8">
+
+        <h3 class="text-3xl font-bold text-primary">
+            {{title()}}
+        </h3>
+
+        <div class="divider"></div>
+
+        <div>
+            <router-outlet />
+        </div>
+
+    </div>
+
+</div>
+
+}
+@else{
+<div>
+    <span>Member not found</span>
+</div>
+}
