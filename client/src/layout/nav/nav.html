@@ -24,6 +24,10 @@
             <a routerLink="/errors" routerLinkActive="text-accent">Errors</a>
         </nav>
 
+        @if(busyService.busyRequestCount() > 0 ){
+            <span class="loading loading-spinner text-accent"></span>
+        }
+
         <!-- Login -->
         <div class="ml-auto flex gap-3">
             @if(accountService.currentUser(); as user){
@@ -32,8 +36,8 @@
                         <img [src]="user?.imageUrl || '/user.png'" alt="user avatar" class="w-10 h-10 rounded-2xl">
                         <span>{{user?.displayName}}</span>
                     </div>
-                    <ul tabindex="0" class="dropdown-content  menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-                        <li><a>Edit profile</a></li>
+                    <ul tabindex="-1" class="dropdown-content  menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
+                        <li><a routerLink="/members/{{user.id}}">Edit profile</a></li>
                         <li><a (click)="logout()">Logout</a></li>
                     </ul>
              </div>
