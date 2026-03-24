@@ -15,6 +15,7 @@ namespace API.Data
         {
             return await context.Members
                    .Include(x => x.User)
+                   .Include(x=>x.Photos)
                    .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -43,5 +44,7 @@ namespace API.Data
         {
             context.Entry(member).State = EntityState.Modified;
         }
+
+
     }
 }
