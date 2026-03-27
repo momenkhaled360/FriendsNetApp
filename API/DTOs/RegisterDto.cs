@@ -8,9 +8,23 @@ namespace API.DTOs
         public string DisplayName { get; set; } = "";
         [Required]
         [EmailAddress]
-        public  string Email { get; set; } = "";
+        public string Email { get; set; } = "";
         [Required]
         [MinLength(4)]
-        public  string Password { get; set; } = "";
+        public string Password { get; set; } = "";
+
+        [Required]
+        public string Gender { get; set; } = "";
+
+        [Required]
+        public string City { get; set; } = "";
+
+        [Required]
+        public string Counrty { get; set; } = "";
+
+        [Required]
+        [DataType(DataType.Date)]
+        public DateOnly DateOfBirth { get; set; }
+
     }
 }

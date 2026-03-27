@@ -41,11 +41,25 @@ export class MemberPhotos implements OnInit {
 
   onUploadImage(file:File){
     this.loading.set(true);
+    const isFirstPhoto = this.photos().length === 0;
+
     this.memberService.uploadPhoto(file).subscribe({
       next: photo => {
+        this.photos.update(photos=> [...photos, photo]);
+
+        if(isFirstPhoto){
+          const currentUser = this.accountService.currentUser();
+          if (currentUser) {
+            currentUser.imageUrl = photo.url;
+            this.accountService.setCurrentUser(currentUser);
+          }
+          this.memberService.member.update(member => ({
+          ...member,
+          imageUrl: photo.url
+          }) as Member);
+        }
         this.memberService.editMode.set(false);
         this.loading.set(false);
-        this.photos.update(photos=> [...photos, photo]);
       },
       error: error =>{
         console.log('Error uploading image: ', error);

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MemberService } from '../../../core/services/member-service';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Member } from '../../../types/member';
 import { AsyncPipe } from '@angular/common';
 import { MemberCard } from "../member-card/member-card";
@@ -13,10 +13,15 @@ import { MemberCard } from "../member-card/member-card";
 })
 export class MemberList {
    private memberService = inject(MemberService);
-   protected members$:Observable<Member[]>
+    protected members$: Observable<Member[]> = of([]);
 
-   constructor(){
+
+  //  constructor(){
+  //   this.members$ = this.memberService.getMembers();
+  //  }
+
+  ngOnInit() {
     this.members$ = this.memberService.getMembers();
-   }
+  }
 
 }

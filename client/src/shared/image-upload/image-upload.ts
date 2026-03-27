@@ -7,11 +7,22 @@ import { Component, input, output, signal } from '@angular/core';
   styleUrl: './image-upload.css',
 })
 export class ImageUpload {
+
   protected imageSrc = signal<string | ArrayBuffer | null | undefined>(null);
   protected isDragging = false;
   private fileToUpload: File | null = null;
   uploadFile = output<File>();
   loading = input<boolean>(false);
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.previewImage(file);
+      this.fileToUpload = file;
+    }
+  }
 
   onDragOver(event:DragEvent){
     event.preventDefault();
