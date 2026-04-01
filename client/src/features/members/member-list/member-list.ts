@@ -1,27 +1,95 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { MemberService } from '../../../core/services/member-service';
-import { Observable, of } from 'rxjs';
-import { Member } from '../../../types/member';
-import { AsyncPipe } from '@angular/common';
+import { Member, MemberParams } from '../../../types/member';
 import { MemberCard } from "../member-card/member-card";
+import { PaginatedResult } from '../../../types/pagination';
+import { Paginator } from "../../../shared/paginator/paginator";
+import { FilterModal } from '../filter-modal/filter-modal';
 
 @Component({
   selector: 'app-member-list',
-  imports: [AsyncPipe, MemberCard],
+  imports: [MemberCard, Paginator, FilterModal],
   templateUrl: './member-list.html',
   styleUrl: './member-list.css',
 })
-export class MemberList {
+export class MemberList implements OnInit {
+   @ViewChild('filterModal') modal!:FilterModal;
    private memberService = inject(MemberService);
-    protected members$: Observable<Member[]> = of([]);
+   protected paginatedMembers = signal<PaginatedResult<Member> | null>(null)
+   protected memberParams = new MemberParams();
+   private updatedParams = new MemberParams();
 
 
-  //  constructor(){
-  //   this.members$ = this.memberService.getMembers();
-  //  }
 
-  ngOnInit() {
-    this.members$ = this.memberService.getMembers();
+   constructor(){
+      const filters = localStorage.getItem('filters');
+      if(filters){
+        this.memberParams = JSON.parse(filters);
+        this.updatedParams = JSON.parse(filters);
+      }
+   }
+
+  ngOnInit():void {
+    this.loadMembers();
   }
+
+  loadMembers(){
+    this.memberService.getMembers(this.memberParams).subscribe({
+      next: result =>{
+        this.paginatedMembers.set(result);
+      }
+    })
+  }
+
+  onPageChange($event: { pageNumber: number; pageSize: number; }) {
+    console.log($event);
+    this.memberParams.pageNumber = $event.pageNumber;
+    this.memberParams.pageSize = $event.pageSize;
+    this.loadMembers();
+  }
+
+  openModal(){
+    this.modal.open();
+  }
+  onClose(){
+    console.log('Modal closed');
+    // this.modal.close();
+  }
+
+  onFilterChange(data:MemberParams){
+    console.log(data)
+    this.memberParams = {...data};
+    this.updatedParams = {...data};
+    this.loadMembers();
+  }
+
+  resetFilters() {
+    this.memberParams = new MemberParams();
+    this.updatedParams = new MemberParams();
+    this.loadMembers();
+  }
+
+  get displayMessage():string{
+    const defalutParams = new MemberParams();
+
+    const filters: string[] = [];
+
+     if(this.updatedParams.gender){
+      filters.push(this.memberParams.gender + 's');
+     }else{
+      filters.push('Males, Females');
+     }
+
+     if(this.updatedParams.minAge !== defalutParams.minAge
+      || this.updatedParams.maxAge !== defalutParams.maxAge
+     ){
+      filters.push(`ages ${this.updatedParams.minAge} - ${this.updatedParams.maxAge}`);
+     }
+
+     filters.push(this.updatedParams.orderBy === 'lastActive' ? 'Recently active' : 'Newest members');
+
+     return filters.length > 0 ? `Selected: ${filters.join(' | ')}` : 'All Members'
+  }
+
 
 }
