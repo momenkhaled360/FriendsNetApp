@@ -59,7 +59,7 @@
 
 
     <!-- RIGHT CONTENT -->
-    <div class="card bg-base-100 shadow-xl w-3/4 p-8">
+    <div class="card bg-base-100 shadow-xl w-3/4 p-8 flex flex-col h[85vh]">
         <div class="flex justify-between items-center">
             <h3 class="text-3xl font-bold text-primary">{{title()}}</h3>
             @if(isCurrentUser()){
@@ -72,7 +72,7 @@
 
         <div class="divider"></div>
 
-        <div>
+        <div class="h-full">
             <router-outlet />
         </div>
 
